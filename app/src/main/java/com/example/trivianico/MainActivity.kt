@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
                     val navigationController = rememberNavController()
                     NavHost(
                         navController = navigationController,
-                        startDestination = Routes.Menu.route
+                        startDestination = Routes.Settings.route
                     ) {
                         composable(Routes.Menu.route){ Menu(navigationController) }
                         composable(Routes.Game.route){ Game(navigationController) }
