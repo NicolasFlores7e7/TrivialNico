@@ -203,8 +203,14 @@ fun Game(navController: NavController, myViewModel: MyViewModel, settings: Setti
                 .clip(
                     RoundedCornerShape(16.dp)
                 ),
-            progress = 0.5f,
+            progress = myViewModel.time.toFloat(),
             color = Color(0xFF01224C),
         )
+        Text(text = "${myViewModel.time}",
+            fontFamily = fonts,
+            fontSize = 24.sp,
+            color = Color(0xFF01224C)
+            )
     }
+    myViewModel.timer()
 }

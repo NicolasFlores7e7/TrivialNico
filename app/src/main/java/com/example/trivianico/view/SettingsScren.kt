@@ -85,7 +85,7 @@ fun Settings(navController: NavController, myViewModel: MyViewModel, setting: Se
             Spacer(modifier = Modifier.width(32.dp))
             MyRadioButtons(fonts, setting)
         }
-        MySlider(fonts, setting,myViewModel)
+        MySlider(fonts, setting)
         Spacer(modifier = Modifier.height(32.dp))
         Row(verticalAlignment = Alignment.CenterVertically)
         {
@@ -232,7 +232,7 @@ fun MyRadioButtons(fonts: FontFamily, setting: Setting) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MySlider(fonts: FontFamily, setting: Setting, myViewModel: MyViewModel) {
+fun MySlider(fonts: FontFamily, setting: Setting) {
     var sliderPosition by remember { mutableFloatStateOf(0.5f) }
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Slider(
@@ -242,7 +242,6 @@ fun MySlider(fonts: FontFamily, setting: Setting, myViewModel: MyViewModel) {
             onValueChange = {
                 sliderPosition = it
                 setting.changeTime((sliderPosition * 15).toInt())
-                myViewModel.changeTime((sliderPosition * 15).toInt())
             },
             colors = SliderDefaults.colors(
                 thumbColor = Color(0xFFDAE6F2),
@@ -256,6 +255,7 @@ fun MySlider(fonts: FontFamily, setting: Setting, myViewModel: MyViewModel) {
             fontSize = 24.sp,
             color = Color(0xFF01224C)
         )
+
     }
 }
 
