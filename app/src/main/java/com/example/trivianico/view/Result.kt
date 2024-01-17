@@ -1,4 +1,4 @@
-package com.example.trivianico
+package com.example.trivianico.view
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,12 +19,14 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.trivianico.navigation.Routes
+import com.example.trivianico.R
+import com.example.trivianico.viewModel.MyViewModel
+import com.example.trivianico.viewModel.Setting
 
 @Composable
-fun Result(navController: NavController) {
-    val fonts = FontFamily(
-        Font(R.font.josefinsans_regular)
-    )
+fun Result(navController: NavController, myViewModel: MyViewModel,settings: Setting) {
+    val fonts = myViewModel.fonts
     Column(
         modifier = Modifier
             .fillMaxSize(0.9f),

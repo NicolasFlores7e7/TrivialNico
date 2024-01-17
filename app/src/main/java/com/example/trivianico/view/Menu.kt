@@ -1,9 +1,8 @@
-package com.example.trivianico
+package com.example.trivianico.view
 
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,8 +10,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
@@ -21,7 +18,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
@@ -30,15 +26,16 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import java.nio.file.WatchEvent
+import com.example.trivianico.navigation.Routes
+import com.example.trivianico.R
+import com.example.trivianico.viewModel.MyViewModel
+import com.example.trivianico.viewModel.Setting
 
 
 @RequiresApi(Build.VERSION_CODES.Q)
 @Composable
-fun Menu(navController: NavController) {
-    val fonts = FontFamily(
-        Font(R.font.josefinsans_regular)
-    )
+fun Menu(navController: NavController, myViewModel: MyViewModel, settings: Setting) {
+    val fonts = myViewModel.fonts
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -56,7 +53,8 @@ fun Menu(navController: NavController) {
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFFDAE6F2),
                 contentColor = Color(0xFF01224C)
-            )
+            ),
+            shape = RectangleShape
         ) {
             Icon(
                 painterResource(id = R.drawable.ic_play),
@@ -72,13 +70,14 @@ fun Menu(navController: NavController) {
         }
         Spacer(modifier = Modifier.height(24.dp))
         ElevatedButton(
-            onClick = { navController.navigate(Routes.Settings.route)},
+            onClick = { navController.navigate(Routes.Settings.route) },
             modifier = Modifier
                 .fillMaxWidth(0.8f),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFFDAE6F2),
                 contentColor = Color(0xFF01224C)
-            )
+            ),
+            shape = RectangleShape
         ) {
             Icon(
                 painterResource(id = R.drawable.ic_settings),
