@@ -19,6 +19,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,7 +28,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -34,15 +35,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.trivianico.R
-import com.example.trivianico.model.Questions
 import com.example.trivianico.model.questionsList
-import com.example.trivianico.viewModel.MyViewModel
-import com.example.trivianico.viewModel.Setting
-import kotlin.random.Random
+import com.example.trivianico.viewModel.GameViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
-fun Game(navController: NavController, myViewModel: MyViewModel, settings: Setting) {
-    val fonts = myViewModel.fonts
+fun Game(navController: NavController, gameViewModel: GameViewModel) {
+    val fonts = gameViewModel.fonts
     val random by remember { mutableStateOf((questionsList.indices).random()) }
     val randomPositions = listOf(
         questionsList[random].correctOption,
@@ -62,7 +62,7 @@ fun Game(navController: NavController, myViewModel: MyViewModel, settings: Setti
         Text(
             modifier = Modifier
                 .padding(top = 40.dp),
-            text = "Ronda 1/10",
+            text = "Ronda ${gameViewModel.roundsCounter}/${gameViewModel.chosenRounds}",
             fontSize = 24.sp,
             fontFamily = fonts,
             fontWeight = FontWeight.Light,
@@ -75,7 +75,7 @@ fun Game(navController: NavController, myViewModel: MyViewModel, settings: Setti
             contentDescription = "Icono tema",
         )
         Text(
-            text = questionsList[random].category,
+            text = questionsList[random].category.toString(),
             fontSize = 32.sp,
             fontFamily = fonts,
             fontWeight = FontWeight.Light,
@@ -189,6 +189,8 @@ fun Game(navController: NavController, myViewModel: MyViewModel, settings: Setti
         }
 
     }
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -203,14 +205,18 @@ fun Game(navController: NavController, myViewModel: MyViewModel, settings: Setti
                 .clip(
                     RoundedCornerShape(16.dp)
                 ),
-            progress = myViewModel.time.toFloat(),
+            progress = gameViewModel.progress,
             color = Color(0xFF01224C),
         )
-        Text(text = "${myViewModel.time}",
+        Text(
+            text = "${gameViewModel.chosenTime}",
             fontFamily = fonts,
             fontSize = 24.sp,
             color = Color(0xFF01224C)
-            )
+        )
     }
-    myViewModel.timer()
+
+
 }
+
+

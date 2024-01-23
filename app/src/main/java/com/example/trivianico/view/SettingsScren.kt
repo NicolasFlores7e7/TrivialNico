@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedButton
@@ -48,14 +47,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.trivianico.navigation.Routes
 import com.example.trivianico.R
-import com.example.trivianico.viewModel.MyViewModel
-import com.example.trivianico.viewModel.Setting
+import com.example.trivianico.viewModel.GameViewModel
 
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun Settings(navController: NavController, myViewModel: MyViewModel, setting: Setting) {
-    val fonts = myViewModel.fonts
+fun Settings(navController: NavController, gameViewModel: GameViewModel) {
+    val fonts = gameViewModel.fonts
     Column(
         modifier = Modifier
             .fillMaxSize(0.9f)
@@ -70,7 +68,7 @@ fun Settings(navController: NavController, myViewModel: MyViewModel, setting: Se
             color = Color(0xFF01224C)
         )
         Spacer(modifier = Modifier.height(32.dp))
-        MyExposedDropdownMenu(fonts, setting, myViewModel)
+        MyExposedDropdownMenu(fonts, gameViewModel)
         Spacer(modifier = Modifier.height(32.dp))
         Row(
             verticalAlignment = Alignment.CenterVertically
@@ -83,9 +81,9 @@ fun Settings(navController: NavController, myViewModel: MyViewModel, setting: Se
                 color = Color(0xFF01224C)
             )
             Spacer(modifier = Modifier.width(32.dp))
-            MyRadioButtons(fonts, setting)
+            MyRadioButtons(fonts, gameViewModel)
         }
-        MySlider(fonts, setting)
+        MySlider(fonts, gameViewModel)
         Spacer(modifier = Modifier.height(32.dp))
         Row(verticalAlignment = Alignment.CenterVertically)
         {
@@ -96,12 +94,13 @@ fun Settings(navController: NavController, myViewModel: MyViewModel, setting: Se
                 color = Color(0xFF01224C)
             )
             Spacer(modifier = Modifier.width(32.dp))
-            MySwitch(setting)
+            MySwitch(gameViewModel)
 
         }
         Spacer(modifier = Modifier.height(32.dp))
         ElevatedButton(
-            onClick = { navController.navigate(Routes.Menu.route) },
+            onClick = { navController.navigate(Routes.Menu.route)
+             },
             modifier = Modifier
                 .fillMaxWidth(0.8f),
             colors = ButtonDefaults.buttonColors(
@@ -134,7 +133,7 @@ fun Settings(navController: NavController, myViewModel: MyViewModel, setting: Se
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyExposedDropdownMenu(fonts: FontFamily, setting: Setting, myViewModel: MyViewModel) {
+fun MyExposedDropdownMenu(fonts: FontFamily, gameViewModel: GameViewModel) {
     val difficulty = listOf("Easy", "Normal", "Hard")
     var expanded by remember { mutableStateOf(false) }
     var selectedText by remember { mutableStateOf(difficulty[0]) }
@@ -186,7 +185,7 @@ fun MyExposedDropdownMenu(fonts: FontFamily, setting: Setting, myViewModel: MyVi
                     onClick = {
                         selectedText = selectionOption
                         expanded = false
-                        setting.changeDif(selectedText)
+                        gameViewModel.changeDif(selectedText)
                     },
                     contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
 
@@ -198,7 +197,7 @@ fun MyExposedDropdownMenu(fonts: FontFamily, setting: Setting, myViewModel: MyVi
 }
 
 @Composable
-fun MyRadioButtons(fonts: FontFamily, setting: Setting) {
+fun MyRadioButtons(fonts: FontFamily, gameViewModel: GameViewModel) {
     val radioOptions = listOf("5", "10", "15")
     var selectedOption by remember { mutableStateOf(radioOptions[0]) }
     Column(
@@ -210,7 +209,7 @@ fun MyRadioButtons(fonts: FontFamily, setting: Setting) {
                     selected = (option == selectedOption),
                     onClick = {
                         selectedOption = option
-                        setting.changeRounds(selectedOption.toInt())
+                        gameViewModel.changeRounds(selectedOption.toInt())
                     },
                     colors = RadioButtonDefaults.colors(
                         selectedColor = Color(0xFFDAE6F2),
@@ -232,7 +231,7 @@ fun MyRadioButtons(fonts: FontFamily, setting: Setting) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MySlider(fonts: FontFamily, setting: Setting) {
+fun MySlider(fonts: FontFamily, gameViewModel: GameViewModel) {
     var sliderPosition by remember { mutableFloatStateOf(0.5f) }
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Slider(
@@ -241,7 +240,7 @@ fun MySlider(fonts: FontFamily, setting: Setting) {
             value = sliderPosition,
             onValueChange = {
                 sliderPosition = it
-                setting.changeTime((sliderPosition * 15).toInt())
+                gameViewModel.changeTime((sliderPosition * 15).toInt())
             },
             colors = SliderDefaults.colors(
                 thumbColor = Color(0xFFDAE6F2),
@@ -260,14 +259,14 @@ fun MySlider(fonts: FontFamily, setting: Setting) {
 }
 
 @Composable
-fun MySwitch(setting: Setting) {
+fun MySwitch(gameViewModel: GameViewModel) {
     var checked by remember { mutableStateOf(false) }
 
     Switch(
         checked = checked,
         onCheckedChange = {
             checked = it
-            setting.changeDarkMode(checked)
+            gameViewModel.changeDarkMode(checked)
         },
         colors = SwitchDefaults.colors(
             checkedThumbColor = Color(0xFFDAE6F2),

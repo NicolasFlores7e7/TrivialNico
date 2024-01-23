@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
@@ -21,21 +20,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.trivianico.navigation.Routes
 import com.example.trivianico.R
-import com.example.trivianico.viewModel.MyViewModel
-import com.example.trivianico.viewModel.Setting
+import com.example.trivianico.viewModel.GameViewModel
 
 
 @RequiresApi(Build.VERSION_CODES.Q)
 @Composable
-fun Menu(navController: NavController, myViewModel: MyViewModel, settings: Setting) {
-    val fonts = myViewModel.fonts
+fun Menu(navController: NavController, gameViewModel: GameViewModel) {
+    val fonts = gameViewModel.fonts
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -47,7 +43,8 @@ fun Menu(navController: NavController, myViewModel: MyViewModel, settings: Setti
             contentDescription = "Icono"
         )
         ElevatedButton(
-            onClick = { navController.navigate(Routes.Game.route) },
+            onClick = { navController.navigate(Routes.Game.route)
+                      gameViewModel.startCountdown()},
             modifier = Modifier
                 .fillMaxWidth(0.8f),
             colors = ButtonDefaults.buttonColors(
