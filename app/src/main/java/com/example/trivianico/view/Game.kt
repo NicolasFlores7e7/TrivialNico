@@ -16,19 +16,12 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -37,22 +30,13 @@ import androidx.navigation.NavController
 import com.example.trivianico.R
 import com.example.trivianico.model.questionsList
 import com.example.trivianico.viewModel.GameViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+
 
 @Composable
 fun Game(navController: NavController, gameViewModel: GameViewModel) {
     val fonts = gameViewModel.fonts
-    val random by remember { mutableStateOf((questionsList.indices).random()) }
-    val randomPositions = listOf(
-        questionsList[random].correctOption,
-        questionsList[random].incorrectOption1,
-        questionsList[random].incorrectOption2,
-        questionsList[random].incorrectOption3
-    )
-    var randomPositionsSuffled by remember {
-        mutableStateOf(randomPositions.shuffled())
-    }
+
+
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -75,7 +59,7 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
             contentDescription = "Icono tema",
         )
         Text(
-            text = questionsList[random].category.toString(),
+            text = questionsList[gameViewModel.random].category.toString(),
             fontSize = 32.sp,
             fontFamily = fonts,
             fontWeight = FontWeight.Light,
@@ -96,7 +80,7 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
         Text(
             modifier = Modifier
                 .fillMaxWidth(0.8f),
-            text = questionsList[random].question,
+            text = questionsList[gameViewModel.random].question,
             fontSize = 16.sp,
             fontFamily = fonts,
             fontWeight = FontWeight.ExtraBold,
@@ -107,7 +91,9 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
         Row(
         ) {
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    gameViewModel.checkIfCorrect(gameViewModel.randomPositionsShuffled[0])
+                    gameViewModel.questionRandomizer()},
                 modifier = Modifier
                     .width(160.dp)
                     .height(80.dp),
@@ -118,7 +104,7 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                 shape = RectangleShape
             ) {
                 Text(
-                    text = randomPositionsSuffled[0],
+                    text = gameViewModel.randomPositionsShuffled[0],
                     fontSize = 16.sp,
                     fontFamily = fonts,
                     textAlign = TextAlign.Center
@@ -126,7 +112,9 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
             }
             Spacer(modifier = Modifier.width(24.dp))
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    gameViewModel.checkIfCorrect(gameViewModel.randomPositionsShuffled[1])
+                    gameViewModel.questionRandomizer() },
                 modifier = Modifier
                     .width(160.dp)
                     .height(80.dp),
@@ -138,7 +126,7 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                 shape = RectangleShape
             ) {
                 Text(
-                    text = randomPositionsSuffled[1],
+                    text = gameViewModel.randomPositionsShuffled[1],
                     fontSize = 16.sp,
                     fontFamily = fonts,
                     textAlign = TextAlign.Center
@@ -149,7 +137,9 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
         Spacer(modifier = Modifier.height(32.dp))
         Row {
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    gameViewModel.checkIfCorrect(gameViewModel.randomPositionsShuffled[2])
+                    gameViewModel.questionRandomizer() },
                 modifier = Modifier
                     .width(160.dp)
                     .height(80.dp),
@@ -160,7 +150,7 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                 shape = RectangleShape
             ) {
                 Text(
-                    text = randomPositionsSuffled[2],
+                    text =gameViewModel.randomPositionsShuffled[2],
                     fontSize = 16.sp,
                     fontFamily = fonts,
                     textAlign = TextAlign.Center
@@ -169,7 +159,9 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
             Spacer(modifier = Modifier.width(24.dp))
 
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    gameViewModel.checkIfCorrect(gameViewModel.randomPositionsShuffled[3])
+                    gameViewModel.questionRandomizer()},
                 modifier = Modifier
                     .width(160.dp)
                     .height(80.dp),
@@ -180,7 +172,7 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                 shape = RectangleShape
             ) {
                 Text(
-                    text = randomPositionsSuffled[3],
+                    text = gameViewModel.randomPositionsShuffled[3],
                     fontSize = 16.sp,
                     fontFamily = fonts,
                     textAlign = TextAlign.Center
@@ -205,7 +197,7 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                 .clip(
                     RoundedCornerShape(16.dp)
                 ),
-            progress = gameViewModel.progress,
+            progress = gameViewModel.progress+0.1f,
             color = Color(0xFF01224C),
         )
         Text(
