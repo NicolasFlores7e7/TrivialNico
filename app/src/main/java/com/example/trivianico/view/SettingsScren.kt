@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -229,7 +230,7 @@ fun MyRadioButtons(fonts: FontFamily, gameViewModel: GameViewModel) {
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun MySlider(fonts: FontFamily, gameViewModel: GameViewModel) {
     var sliderPosition by remember { mutableFloatStateOf(0.5f) }
@@ -241,6 +242,7 @@ fun MySlider(fonts: FontFamily, gameViewModel: GameViewModel) {
             onValueChange = {
                 sliderPosition = it
                 gameViewModel.changeTime((sliderPosition * 15).toInt())
+                println((sliderPosition*15).toInt())
             },
             colors = SliderDefaults.colors(
                 thumbColor = Color(0xFFDAE6F2),
@@ -266,7 +268,6 @@ fun MySwitch(gameViewModel: GameViewModel) {
         checked = checked,
         onCheckedChange = {
             checked = it
-            gameViewModel.changeDarkMode(checked)
         },
         colors = SwitchDefaults.colors(
             checkedThumbColor = Color(0xFFDAE6F2),

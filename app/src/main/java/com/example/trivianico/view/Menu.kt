@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
@@ -43,8 +44,11 @@ fun Menu(navController: NavController, gameViewModel: GameViewModel) {
             contentDescription = "Icono"
         )
         ElevatedButton(
-            onClick = { navController.navigate(Routes.Game.route)
-                      gameViewModel.startCountdown()},
+            onClick = {
+                navController.navigate(Routes.Game.route)
+                gameViewModel.startCountdown()
+                gameViewModel.reset()
+            },
             modifier = Modifier
                 .fillMaxWidth(0.8f),
             colors = ButtonDefaults.buttonColors(
@@ -58,7 +62,7 @@ fun Menu(navController: NavController, gameViewModel: GameViewModel) {
                 contentDescription = "icon",
 
                 )
-
+Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = "Play",
                 fontSize = 24.sp,
@@ -80,6 +84,7 @@ fun Menu(navController: NavController, gameViewModel: GameViewModel) {
                 painterResource(id = R.drawable.ic_settings),
                 contentDescription = "icon",
             )
+            Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = "Settings",
                 fontSize = 24.sp,
