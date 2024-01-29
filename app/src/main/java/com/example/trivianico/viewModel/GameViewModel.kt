@@ -58,11 +58,17 @@ class GameViewModel : ViewModel() {
 
     var buttonColors = listOf(
         Color(0xFFDAE6F2),
-        Color(0xB2FF0000),
-        Color(0xA9008000),
+        Color(0xB2FF8181),
+        Color(0xA9447744),
 
         )
-    var buttonColorsChanger by mutableIntStateOf(0)
+    var buttonColorsChanger by mutableStateOf(
+        listOf(
+            mutableIntStateOf(1),
+            mutableIntStateOf(1),
+            mutableIntStateOf(1),
+            mutableIntStateOf(1)
+        ))
     var buttonsEnabler by mutableStateOf(true)
 
     private var countdownJob: Job? = null
@@ -105,6 +111,15 @@ class GameViewModel : ViewModel() {
 
     }
 
+
+    private fun buttonDisabledColor(){
+        for(i in buttonColorsChanger.indices)
+            if(randomPositionsShuffled[i]== questionsList[random].correctOption){
+                buttonColorsChanger[i].value = 2
+            }else buttonColorsChanger[i].value = 1
+
+    }
+
     fun changeDarkMode(onOrOff: Boolean) {
         darkOnOrOff = onOrOff
 
@@ -121,7 +136,6 @@ class GameViewModel : ViewModel() {
                 roundsPlusOne()
                 questionRandomizer()
                 enableButtons()
-
             }
             for (i in remainingTime downTo 0) {
                 imageSelector()
@@ -132,9 +146,7 @@ class GameViewModel : ViewModel() {
                 if (i == 0) {
                     stopCountdown()
                     startCountdown()
-
                 }
-
             }
         }
 
@@ -162,12 +174,14 @@ class GameViewModel : ViewModel() {
         isItCorrect = if (option == questionsList[random].correctOption) {
             correct++
             true
+
         } else false
     }
 
     private fun roundsPlusOne() {
         changeTime(remainingTime)
         roundsCounter++
+        progress=1.1f
 
     }
 
@@ -177,16 +191,19 @@ class GameViewModel : ViewModel() {
 
     private fun disableButtons() {
         buttonsEnabler = false
+        buttonDisabledColor()
     }
 
     fun reset() {
         gameOver = false
         correct = 0
         roundsCounter = 1
-        progress = 1f
+        progress = 1.1f
+        remainingTime = chosenTime
     }
 
-     private fun imageSelector(){
+
+    private fun imageSelector() {
         imageListSelector = when (questionsList[random].category) {
             Category.Geografia -> 0
             Category.Historia -> 1
@@ -196,8 +213,9 @@ class GameViewModel : ViewModel() {
             Category.Deportes -> 5
         }
     }
-
 }
+
+
 
 
 

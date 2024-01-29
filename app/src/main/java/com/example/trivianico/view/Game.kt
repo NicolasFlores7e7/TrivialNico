@@ -42,8 +42,6 @@ import com.example.trivianico.viewModel.GameViewModel
 fun Game(navController: NavController, gameViewModel: GameViewModel) {
     val fonts = gameViewModel.fonts
 
-    var buttonColors = gameViewModel.buttonColors
-
     if (gameViewModel.gameOver) {
         navController.navigate(Routes.Result.route)
     }
@@ -110,9 +108,9 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                         .width(160.dp)
                         .height(80.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = buttonColors[0],
+                        containerColor = gameViewModel.buttonColors[0],
                         contentColor = Color(0xFF01224C),
-                        disabledContainerColor = buttonColors[gameViewModel.buttonColorsChanger]
+                        disabledContainerColor = gameViewModel.buttonColors[gameViewModel.buttonColorsChanger[0].value]
 
                     ),
                     shape = RectangleShape,
@@ -138,9 +136,9 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                         .height(80.dp),
 
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = buttonColors[0],
+                        containerColor = gameViewModel.buttonColors[0],
                         contentColor = Color(0xFF01224C),
-                        disabledContainerColor = buttonColors[gameViewModel.buttonColorsChanger]
+                        disabledContainerColor = gameViewModel.buttonColors[gameViewModel.buttonColorsChanger[1].value]
                     ),
                     shape = RectangleShape,
                     enabled = gameViewModel.buttonsEnabler,
@@ -166,9 +164,9 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                         .width(160.dp)
                         .height(80.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = buttonColors[0],
+                        containerColor = gameViewModel.buttonColors[0],
                         contentColor = Color(0xFF01224C),
-                        disabledContainerColor = buttonColors[gameViewModel.buttonColorsChanger]
+                        disabledContainerColor = gameViewModel.buttonColors[gameViewModel.buttonColorsChanger[2].value]
                     ),
                     shape = RectangleShape,
                     enabled = gameViewModel.buttonsEnabler,
@@ -192,9 +190,9 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                         .width(160.dp)
                         .height(80.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = buttonColors[0],
+                        containerColor = gameViewModel.buttonColors[0],
                         contentColor = Color(0xFF01224C),
-                        disabledContainerColor = buttonColors[gameViewModel.buttonColorsChanger]
+                        disabledContainerColor = gameViewModel.buttonColors[gameViewModel.buttonColorsChanger[3].value]
                     ),
                     shape = RectangleShape,
                     enabled = gameViewModel.buttonsEnabler,
@@ -232,8 +230,6 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
             )
         }
     }
-
-
 
 
 }
