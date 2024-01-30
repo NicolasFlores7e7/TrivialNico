@@ -1,31 +1,23 @@
 package com.example.trivianico.viewModel
 
 
-import androidx.activity.OnBackPressedCallback
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.lifecycle.ViewModel
-import androidx.navigation.NavBackStackEntry
 import com.example.trivianico.R
 import com.example.trivianico.model.Category
-import com.example.trivianico.model.Questions
 import com.example.trivianico.model.questionsList
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class GameViewModel : ViewModel() {
     val fonts = FontFamily(
@@ -142,7 +134,7 @@ class GameViewModel : ViewModel() {
                 changeTime(i)
                 progress -= minus
                 delay(1000)
-                println(chosenTime)
+//                println(chosenTime)
                 if (i == 0) {
                     stopCountdown()
                     startCountdown()
@@ -207,7 +199,7 @@ class GameViewModel : ViewModel() {
         imageListSelector = when (questionsList[random].category) {
             Category.Geografia -> 0
             Category.Historia -> 1
-            Category.ArteYLiteratura -> 2
+            Category.Arte -> 2
             Category.Entretenimiento -> 3
             Category.Ciencias -> 4
             Category.Deportes -> 5

@@ -101,6 +101,7 @@ fun Settings(navController: NavController, gameViewModel: GameViewModel) {
         Spacer(modifier = Modifier.height(32.dp))
         ElevatedButton(
             onClick = { navController.navigate(Routes.Menu.route)
+                navController.clearBackStack("menu")
              },
             modifier = Modifier
                 .fillMaxWidth(0.8f),
@@ -234,6 +235,7 @@ fun MyRadioButtons(fonts: FontFamily, gameViewModel: GameViewModel) {
 @Composable
 fun MySlider(fonts: FontFamily, gameViewModel: GameViewModel) {
     var sliderPosition by remember { mutableFloatStateOf(0.5f) }
+
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Slider(
             modifier = Modifier
