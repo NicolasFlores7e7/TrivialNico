@@ -47,7 +47,6 @@ fun Menu(navController: NavController, gameViewModel: GameViewModel) {
             onClick = {
                 gameViewModel.reset()
                 navController.navigate(Routes.Game.route)
-                gameViewModel.startCountdown()
                 gameViewModel.reset()
             },
             modifier = Modifier
