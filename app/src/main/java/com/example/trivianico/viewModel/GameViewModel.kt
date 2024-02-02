@@ -4,9 +4,9 @@ package com.example.trivianico.viewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.lifecycle.ViewModel
@@ -20,7 +20,6 @@ class GameViewModel() : ViewModel() {
     val fonts = FontFamily(
         Font(R.font.josefinsans_regular)
     )
-
     var chosenDif by mutableStateOf("Easy")
     var chosenRounds by mutableIntStateOf(5)
     var chosenTime by mutableIntStateOf(7)
@@ -42,14 +41,21 @@ class GameViewModel() : ViewModel() {
     )
     var randomPositionsShuffled by mutableStateOf(randomPositions.shuffled())
 
+
     var appColors = listOf(
         Color(0xFFDAE6F2),
         Color(0xB2FF8181),
         Color(0xA9447744),
         Color(146, 193, 220, 255),
-        Color(78, 100, 116, 255)
+        Color(78, 100, 116, 255),
+        Color(0xFF01224C)
+
     )
-    var buttonColorsChanger by mutableStateOf(
+    var fontColor by mutableStateOf(appColors[5])
+    var containerColor by mutableStateOf(appColors[0])
+
+
+    var buttonColorsChangerWhenPressed by mutableStateOf(
         listOf(
             mutableIntStateOf(1),
             mutableIntStateOf(1),
@@ -96,10 +102,10 @@ class GameViewModel() : ViewModel() {
 
 
     private fun buttonDisabledColor() {
-        for (i in buttonColorsChanger.indices)
+        for (i in buttonColorsChangerWhenPressed.indices)
             if (randomPositionsShuffled[i] == questionDiffListNumber[diffNumber][random].correctOption) {
-                buttonColorsChanger[i].value = 2
-            } else buttonColorsChanger[i].value = 1
+                buttonColorsChangerWhenPressed[i].value = 2
+            } else buttonColorsChangerWhenPressed[i].value = 1
 
     }
 
@@ -109,7 +115,7 @@ class GameViewModel() : ViewModel() {
     }
 
 
-    fun stopCountdown() {
+    fun roundsFinish() {
         disableButtons()
         if (roundsCounter >= chosenRounds) {
             gameOver = true
@@ -151,7 +157,6 @@ class GameViewModel() : ViewModel() {
         correct = 0
         roundsCounter = 1
         remainingTime = chosenTime
-//        questionRandomizer()
         questionsDiff()
         enableButtons()
     }
@@ -210,10 +215,6 @@ class GameViewModel() : ViewModel() {
                 randomPositionsShuffled = randomPositions.shuffled()
             }
         }
-        println("Diff = $chosenDif")
-        println()
-        println(random)
-        println(randomPositions)
     }
 }
 

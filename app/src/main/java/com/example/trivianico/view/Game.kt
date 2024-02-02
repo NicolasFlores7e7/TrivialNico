@@ -27,7 +27,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -37,7 +36,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.trivianico.model.questionsList
 import com.example.trivianico.navigation.Routes
 import com.example.trivianico.viewModel.GameViewModel
 import kotlinx.coroutines.delay
@@ -51,6 +49,15 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
     }
     var timeLeft by rememberSaveable { mutableIntStateOf(gameViewModel.remainingTime) }
     var configuration = LocalConfiguration.current
+    var fontColor by remember { mutableStateOf(gameViewModel.appColors[5]) }
+    fontColor = if (gameViewModel.darkOnOrOff) {
+        gameViewModel.appColors[0]
+    } else gameViewModel.appColors[5]
+    var containerColor by remember { mutableStateOf(gameViewModel.appColors[0]) }
+    containerColor = if (gameViewModel.darkOnOrOff) {
+        gameViewModel.appColors[5]
+    } else gameViewModel.appColors[0]
+
     when (configuration.orientation) {
         Configuration.ORIENTATION_LANDSCAPE -> {
             BoxWithConstraints(
@@ -60,12 +67,7 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                 Row {
                     Column(
                         modifier = Modifier
-                            .fillMaxHeight()
-//                            .padding(
-//                                start = 32.dp,
-//                            )
-                            ,
-
+                            .fillMaxHeight(),
                         verticalArrangement = Arrangement.Top,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -75,7 +77,7 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                             fontSize = 24.sp,
                             fontFamily = fonts,
                             fontWeight = FontWeight.Light,
-                            color = Color(0xFF01224C)
+                            color = fontColor
                         )
                         Image(
                             modifier = Modifier
@@ -95,7 +97,7 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                             fontSize = 32.sp,
                             fontFamily = fonts,
                             fontWeight = FontWeight.Light,
-                            color = Color(0xFF01224C),
+                            color = fontColor,
                         )
                     }
                     Spacer(modifier = Modifier.width(32.dp))
@@ -109,11 +111,11 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                             modifier = Modifier
                                 .fillMaxWidth(0.8f),
                             text = gameViewModel.questionDiffListNumber[gameViewModel.diffNumber][gameViewModel.random].question,
-                            fontSize = 16.sp,
+                            fontSize = 24.sp,
                             fontFamily = fonts,
                             fontWeight = FontWeight.ExtraBold,
                             textAlign = TextAlign.Center,
-                            color = Color(0xFF01224C),
+                            color = fontColor,
                         )
                         Spacer(modifier = Modifier.height(32.dp))
                         Row(
@@ -121,16 +123,16 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                             Button(
                                 onClick = {
                                     gameViewModel.checkIfCorrect(gameViewModel.randomPositionsShuffled[0])
-                                    gameViewModel.stopCountdown()
+                                    gameViewModel.roundsFinish()
                                     gameViewModel.buttonsEnabler = false
                                 },
                                 modifier = Modifier
                                     .width(120.dp)
                                     .height(80.dp),
                                 colors = ButtonDefaults.buttonColors(
-                                    containerColor = gameViewModel.appColors[0],
-                                    contentColor = Color(0xFF01224C),
-                                    disabledContainerColor = gameViewModel.appColors[gameViewModel.buttonColorsChanger[0].value]
+                                    containerColor = containerColor,
+                                    contentColor = fontColor,
+                                    disabledContainerColor = gameViewModel.appColors[gameViewModel.buttonColorsChangerWhenPressed[0].value]
 
                                 ),
                                 shape = RectangleShape,
@@ -138,7 +140,7 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                             ) {
                                 Text(
                                     text = gameViewModel.randomPositionsShuffled[0],
-                                    fontSize = 16.sp,
+                                    fontSize = 12.sp,
                                     fontFamily = fonts,
                                     textAlign = TextAlign.Center
                                 )
@@ -147,7 +149,7 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                             Button(
                                 onClick = {
                                     gameViewModel.checkIfCorrect(gameViewModel.randomPositionsShuffled[1])
-                                    gameViewModel.stopCountdown()
+                                    gameViewModel.roundsFinish()
                                     gameViewModel.buttonsEnabler = false
                                 },
                                 modifier = Modifier
@@ -155,16 +157,16 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                                     .height(80.dp),
 
                                 colors = ButtonDefaults.buttonColors(
-                                    containerColor = gameViewModel.appColors[0],
-                                    contentColor = Color(0xFF01224C),
-                                    disabledContainerColor = gameViewModel.appColors[gameViewModel.buttonColorsChanger[1].value]
+                                    containerColor = containerColor,
+                                    contentColor = fontColor,
+                                    disabledContainerColor = gameViewModel.appColors[gameViewModel.buttonColorsChangerWhenPressed[1].value]
                                 ),
                                 shape = RectangleShape,
                                 enabled = gameViewModel.buttonsEnabler,
                             ) {
                                 Text(
                                     text = gameViewModel.randomPositionsShuffled[1],
-                                    fontSize = 16.sp,
+                                    fontSize = 12.sp,
                                     fontFamily = fonts,
                                     textAlign = TextAlign.Center
                                 )
@@ -173,23 +175,23 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                             Button(
                                 onClick = {
                                     gameViewModel.checkIfCorrect(gameViewModel.randomPositionsShuffled[2])
-                                    gameViewModel.stopCountdown()
+                                    gameViewModel.roundsFinish()
                                     gameViewModel.buttonsEnabler = false
                                 },
                                 modifier = Modifier
                                     .width(120.dp)
                                     .height(80.dp),
                                 colors = ButtonDefaults.buttonColors(
-                                    containerColor = gameViewModel.appColors[0],
-                                    contentColor = Color(0xFF01224C),
-                                    disabledContainerColor = gameViewModel.appColors[gameViewModel.buttonColorsChanger[2].value]
+                                    containerColor = containerColor,
+                                    contentColor = fontColor,
+                                    disabledContainerColor = gameViewModel.appColors[gameViewModel.buttonColorsChangerWhenPressed[2].value]
                                 ),
                                 shape = RectangleShape,
                                 enabled = gameViewModel.buttonsEnabler,
                             ) {
                                 Text(
                                     text = gameViewModel.randomPositionsShuffled[2],
-                                    fontSize = 16.sp,
+                                    fontSize = 12.sp,
                                     fontFamily = fonts,
                                     textAlign = TextAlign.Center
                                 )
@@ -198,23 +200,23 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                             Button(
                                 onClick = {
                                     gameViewModel.checkIfCorrect(gameViewModel.randomPositionsShuffled[3])
-                                    gameViewModel.stopCountdown()
+                                    gameViewModel.roundsFinish()
                                     gameViewModel.buttonsEnabler = false
                                 },
                                 modifier = Modifier
                                     .width(120.dp)
                                     .height(80.dp),
                                 colors = ButtonDefaults.buttonColors(
-                                    containerColor = gameViewModel.appColors[0],
-                                    contentColor = Color(0xFF01224C),
-                                    disabledContainerColor = gameViewModel.appColors[gameViewModel.buttonColorsChanger[3].value]
+                                    containerColor = containerColor,
+                                    contentColor = fontColor,
+                                    disabledContainerColor = gameViewModel.appColors[gameViewModel.buttonColorsChangerWhenPressed[3].value]
                                 ),
                                 shape = RectangleShape,
                                 enabled = gameViewModel.buttonsEnabler,
                             ) {
                                 Text(
                                     text = gameViewModel.randomPositionsShuffled[3],
-                                    fontSize = 16.sp,
+                                    fontSize = 12.sp,
                                     fontFamily = fonts,
                                     textAlign = TextAlign.Center
                                 )
@@ -222,16 +224,16 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
 
                         }
                         Spacer(Modifier.height(32.dp))
-//                        Countdown(gameViewModel
                         LaunchedEffect(timeLeft) {
                             gameViewModel.imageSelector()
                             while (timeLeft > 0) {
                                 delay(1000L)
                                 timeLeft--
+                                println("valor de dark: ${gameViewModel.darkOnOrOff}")
 
                             }
                             if (timeLeft == 0) {
-                                gameViewModel.stopCountdown()
+                                gameViewModel.roundsFinish()
                                 delay(2000L)
                                 gameViewModel.roundsPlusOne()
                                 timeLeft = gameViewModel.remainingTime
@@ -243,8 +245,17 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                                 .fillMaxWidth(0.8f),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            LinearProgressIndicator(progress = timeLeft.toFloat() / gameViewModel.chosenTime)
-                            Text(text = "$timeLeft")
+                            LinearProgressIndicator(
+                                progress = timeLeft.toFloat() / gameViewModel.chosenTime,
+                                color = fontColor,
+                                trackColor = containerColor
+
+                            )
+                            Spacer(Modifier.height(8.dp))
+                            Text(
+                                text = "$timeLeft",
+                                color = fontColor
+                            )
                         }
                     }
                 }
@@ -267,7 +278,7 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                     fontSize = 24.sp,
                     fontFamily = fonts,
                     fontWeight = FontWeight.Light,
-                    color = Color(0xFF01224C)
+                    color = fontColor
                 )
                 Image(
                     modifier = Modifier
@@ -285,7 +296,7 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                     fontSize = 32.sp,
                     fontFamily = fonts,
                     fontWeight = FontWeight.Light,
-                    color = Color(0xFF01224C),
+                    color = fontColor
                 )
                 Column(
                     modifier = Modifier,
@@ -301,7 +312,7 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                         fontFamily = fonts,
                         fontWeight = FontWeight.ExtraBold,
                         textAlign = TextAlign.Center,
-                        color = Color(0xFF01224C),
+                        color = fontColor
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Row(
@@ -309,16 +320,16 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                         Button(
                             onClick = {
                                 gameViewModel.checkIfCorrect(gameViewModel.randomPositionsShuffled[0])
-                                gameViewModel.stopCountdown()
+                                gameViewModel.roundsFinish()
                                 gameViewModel.buttonsEnabler = false
                             },
                             modifier = Modifier
                                 .width(160.dp)
                                 .height(80.dp),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = gameViewModel.appColors[0],
-                                contentColor = Color(0xFF01224C),
-                                disabledContainerColor = gameViewModel.appColors[gameViewModel.buttonColorsChanger[0].value]
+                                containerColor = containerColor,
+                                contentColor = fontColor,
+                                disabledContainerColor = gameViewModel.appColors[gameViewModel.buttonColorsChangerWhenPressed[0].value]
 
                             ),
                             shape = RectangleShape,
@@ -335,7 +346,7 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                         Button(
                             onClick = {
                                 gameViewModel.checkIfCorrect(gameViewModel.randomPositionsShuffled[1])
-                                gameViewModel.stopCountdown()
+                                gameViewModel.roundsFinish()
                                 gameViewModel.buttonsEnabler = false
                             },
                             modifier = Modifier
@@ -343,9 +354,9 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                                 .height(80.dp),
 
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = gameViewModel.appColors[0],
-                                contentColor = Color(0xFF01224C),
-                                disabledContainerColor = gameViewModel.appColors[gameViewModel.buttonColorsChanger[1].value]
+                                containerColor = containerColor,
+                                contentColor = fontColor,
+                                disabledContainerColor = gameViewModel.appColors[gameViewModel.buttonColorsChangerWhenPressed[1].value]
                             ),
                             shape = RectangleShape,
                             enabled = gameViewModel.buttonsEnabler,
@@ -364,16 +375,16 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                         Button(
                             onClick = {
                                 gameViewModel.checkIfCorrect(gameViewModel.randomPositionsShuffled[2])
-                                gameViewModel.stopCountdown()
+                                gameViewModel.roundsFinish()
                                 gameViewModel.buttonsEnabler = false
                             },
                             modifier = Modifier
                                 .width(160.dp)
                                 .height(80.dp),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = gameViewModel.appColors[0],
-                                contentColor = Color(0xFF01224C),
-                                disabledContainerColor = gameViewModel.appColors[gameViewModel.buttonColorsChanger[2].value]
+                                containerColor = containerColor,
+                                contentColor = fontColor,
+                                disabledContainerColor = gameViewModel.appColors[gameViewModel.buttonColorsChangerWhenPressed[2].value]
                             ),
                             shape = RectangleShape,
                             enabled = gameViewModel.buttonsEnabler,
@@ -390,16 +401,16 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                         Button(
                             onClick = {
                                 gameViewModel.checkIfCorrect(gameViewModel.randomPositionsShuffled[3])
-                                gameViewModel.stopCountdown()
+                                gameViewModel.roundsFinish()
                                 gameViewModel.buttonsEnabler = false
                             },
                             modifier = Modifier
                                 .width(160.dp)
                                 .height(80.dp),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = gameViewModel.appColors[0],
-                                contentColor = Color(0xFF01224C),
-                                disabledContainerColor = gameViewModel.appColors[gameViewModel.buttonColorsChanger[3].value]
+                                containerColor = containerColor,
+                                contentColor = fontColor,
+                                disabledContainerColor = gameViewModel.appColors[gameViewModel.buttonColorsChangerWhenPressed[3].value]
                             ),
                             shape = RectangleShape,
                             enabled = gameViewModel.buttonsEnabler,
@@ -415,7 +426,6 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
 
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-//                Countdown(gameViewModel)
                 LaunchedEffect(timeLeft) {
                     gameViewModel.imageSelector()
                     while (timeLeft > 0) {
@@ -424,7 +434,7 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
 
                     }
                     if (timeLeft == 0) {
-                        gameViewModel.stopCountdown()
+                        gameViewModel.roundsFinish()
                         delay(2000L)
                         gameViewModel.roundsPlusOne()
                         timeLeft = gameViewModel.remainingTime
@@ -436,8 +446,15 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                         .fillMaxWidth(0.8f),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    LinearProgressIndicator(progress = timeLeft.toFloat() / gameViewModel.chosenTime)
-                    Text(text = "$timeLeft")
+                    LinearProgressIndicator(
+                        progress = timeLeft.toFloat() / gameViewModel.chosenTime,
+                        color = fontColor,
+                        trackColor = containerColor
+                    )
+                    Text(
+                        text = "$timeLeft",
+                        color = fontColor
+                    )
                 }
             }
         }
@@ -446,33 +463,6 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
 
 }
 
-//@Composable
-//fun Countdown(gameViewModel: GameViewModel) {
-//
-//    LaunchedEffect(timeLeft) {
-//        gameViewModel.imageSelector()
-//        while (timeLeft > 0) {
-//            delay(1000L)
-//            timeLeft--
-//
-//        }
-//        if (timeLeft == 0) {
-//            gameViewModel.stopCountdown()
-//            delay(2000L)
-//            gameViewModel.roundsPlusOne()
-//            timeLeft = gameViewModel.remainingTime
-//        }
-//    }
-//    Column(
-//
-//        modifier = Modifier
-//            .fillMaxWidth(0.8f),
-//        horizontalAlignment = Alignment.CenterHorizontally
-//    ) {
-//        LinearProgressIndicator(progress = timeLeft.toFloat() / gameViewModel.chosenTime)
-//        Text(text = "$timeLeft")
-//    }
-//}
 
 
 

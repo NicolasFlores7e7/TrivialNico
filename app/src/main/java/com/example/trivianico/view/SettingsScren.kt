@@ -1,14 +1,18 @@
 package com.example.trivianico.view
 
+import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -39,6 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.navigation.NavController
@@ -54,81 +59,180 @@ import com.example.trivianico.viewModel.GameViewModel
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Settings(navController: NavController, gameViewModel: GameViewModel) {
+
     val fonts = gameViewModel.fonts
-    var checked by remember { mutableStateOf(false) }
-    Column(
-        modifier = Modifier
-            .fillMaxSize(0.9f)
-            .padding(top = 32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = "Settings",
-            fontFamily = fonts,
-            fontSize = 32.sp,
-            color = Color(0xFF01224C)
-        )
-        Spacer(modifier = Modifier.height(32.dp))
-        MyExposedDropdownMenu(fonts, gameViewModel)
-        Spacer(modifier = Modifier.height(32.dp))
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        )
-        {
-            Text(
-                text = "Rounds: ",
-                fontFamily = fonts,
-                fontSize = 24.sp,
-                color = Color(0xFF01224C)
-            )
-            Spacer(modifier = Modifier.width(32.dp))
-            MyRadioButtons(fonts, gameViewModel)
-        }
-        MySlider(fonts, gameViewModel)
-        Spacer(modifier = Modifier.height(32.dp))
-        Row(verticalAlignment = Alignment.CenterVertically)
-        {
-            Text(
-                text = "Dark Mode",
-                fontFamily = fonts,
-                fontSize = 24.sp,
-                color = Color(0xFF01224C)
-            )
-            Spacer(modifier = Modifier.width(32.dp))
-            MySwitch(gameViewModel)
+    var fontColor by remember { mutableStateOf(gameViewModel.appColors[5]) }
+    fontColor = if (gameViewModel.darkOnOrOff) {
+        gameViewModel.appColors[0]
+    } else gameViewModel.appColors[5]
+    var containerColor by remember { mutableStateOf(gameViewModel.appColors[0]) }
+    containerColor = if (gameViewModel.darkOnOrOff) {
+        gameViewModel.appColors[5]
+    } else gameViewModel.appColors[0]
+    var configuration = LocalConfiguration.current
+
+    when (configuration.orientation) {
+        Configuration.ORIENTATION_LANDSCAPE -> {
+            BoxWithConstraints (
+                modifier = Modifier
+                    .fillMaxSize(0.9f),
+            ){
+                Row(modifier = Modifier
+                    .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center) {
+                    Text(text = "Settings",
+                        color = containerColor
+                        )
+                }
+                Spacer(Modifier.height(16.dp))
+                Row{
+                    Column(
+                        modifier = Modifier
+                            .fillMaxHeight(),
+                        verticalArrangement = Arrangement.Top,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ){
+                        Spacer(Modifier.height(32.dp))
+                        MyExposedDropdownMenu(fonts, gameViewModel, fontColor, containerColor)
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        )
+                        {
+                            Text(
+                                text = "Rounds: ",
+                                fontFamily = fonts,
+                                fontSize = 24.sp,
+                                color = fontColor
+                            )
+                            Spacer(modifier = Modifier.width(32.dp))
+                            MyRadioButtons(fonts, gameViewModel, fontColor)
+                        }
+                    }
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize(0.9f)
+                            .padding(top = 32.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        MySlider(fonts, gameViewModel, fontColor)
+                        Spacer(Modifier.height(16.dp))
+                        Row(verticalAlignment = Alignment.CenterVertically)
+                        {
+                            Text(
+                                text = "Dark Mode",
+                                fontFamily = fonts,
+                                fontSize = 24.sp,
+                                color = fontColor
+                            )
+                            Spacer(modifier = Modifier.width(32.dp))
+                            MySwitch(gameViewModel)
+                        }
+                        Spacer(Modifier.height(16.dp))
+                        ElevatedButton(
+                            onClick = {
+                                navController.navigate(Routes.Menu.route)
+                                navController.clearBackStack("menu")
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth(0.8f),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = containerColor,
+                                contentColor = fontColor
+                            ),
+                            shape = RectangleShape,
+                        ) {
+                            Icon(
+                                painterResource(id = R.drawable.ic_menu),
+                                contentDescription = "icon",
+                            )
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Text(
+                                text = "Return to menu",
+                                fontSize = 24.sp,
+                                fontFamily = fonts,
+
+                                )
+                        }
+                    }
+
+                }
+
+            }
 
         }
-        Spacer(modifier = Modifier.height(32.dp))
-        ElevatedButton(
-            onClick = { navController.navigate(Routes.Menu.route)
-                navController.clearBackStack("menu")
-             },
-            modifier = Modifier
-                .fillMaxWidth(0.8f),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFDAE6F2),
-                contentColor = Color(0xFF01224C)
-            ),
-            shape = RectangleShape,
-            border = BorderStroke(
-                width = 4.dp,
-                color = Color(0xFF01224C),
 
-                ),
-
+        else -> {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize(0.9f)
+                    .padding(top = 32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
-            Icon(
-                painterResource(id = R.drawable.ic_menu),
-                contentDescription = "icon",
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(
-                text = "Return to menu",
-                fontSize = 24.sp,
-                fontFamily = fonts,
-
+                Text(
+                    text = "Settings",
+                    fontFamily = fonts,
+                    fontSize = 32.sp,
+                    color = fontColor
                 )
+                Spacer(modifier = Modifier.height(32.dp))
+                MyExposedDropdownMenu(fonts, gameViewModel, fontColor, containerColor)
+                Spacer(modifier = Modifier.height(32.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                )
+                {
+                    Text(
+                        text = "Rounds: ",
+                        fontFamily = fonts,
+                        fontSize = 24.sp,
+                        color = fontColor
+                    )
+                    Spacer(modifier = Modifier.width(32.dp))
+                    MyRadioButtons(fonts, gameViewModel, fontColor)
+                }
+                MySlider(fonts, gameViewModel, fontColor)
+                Spacer(modifier = Modifier.height(32.dp))
+                Row(verticalAlignment = Alignment.CenterVertically)
+                {
+                    Text(
+                        text = "Dark Mode",
+                        fontFamily = fonts,
+                        fontSize = 24.sp,
+                        color = fontColor
+                    )
+                    Spacer(modifier = Modifier.width(32.dp))
+                    MySwitch(gameViewModel)
+
+                }
+                Spacer(modifier = Modifier.height(32.dp))
+                ElevatedButton(
+                    onClick = {
+                        navController.navigate(Routes.Menu.route)
+                        navController.clearBackStack("menu")
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth(0.8f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = containerColor,
+                        contentColor = fontColor
+                    ),
+                    shape = RectangleShape,
+                ) {
+                    Icon(
+                        painterResource(id = R.drawable.ic_menu),
+                        contentDescription = "icon",
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Text(
+                        text = "Return to menu",
+                        fontSize = 24.sp,
+                        fontFamily = fonts,
+
+                        )
+                }
+            }
         }
     }
 }
@@ -136,7 +240,12 @@ fun Settings(navController: NavController, gameViewModel: GameViewModel) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyExposedDropdownMenu(fonts: FontFamily, gameViewModel: GameViewModel) {
+fun MyExposedDropdownMenu(
+    fonts: FontFamily,
+    gameViewModel: GameViewModel,
+    fontColor: Color,
+    containerColor: Color
+) {
     val difficulty = listOf("Easy", "Normal", "Hard")
     var expanded by remember { mutableStateOf(false) }
     var selectedText by remember { mutableStateOf(difficulty[0]) }
@@ -147,15 +256,7 @@ fun MyExposedDropdownMenu(fonts: FontFamily, gameViewModel: GameViewModel) {
         ) {
         TextField(
             modifier = Modifier
-                .menuAnchor()
-                .border(
-                    border = BorderStroke(
-                        width = 4.dp,
-                        color = Color(0xFF01224C),
-
-                        ),
-                    shape = RectangleShape
-                ),
+                .menuAnchor(),
             textStyle = TextStyle(
                 fontFamily = fonts,
                 fontSize = 24.sp,
@@ -166,8 +267,8 @@ fun MyExposedDropdownMenu(fonts: FontFamily, gameViewModel: GameViewModel) {
             onValueChange = { selectedText = it },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             colors = ExposedDropdownMenuDefaults.textFieldColors(
-                textColor = Color(0xFF01224C),
-                containerColor = Color(0xFFDAE6F2)
+                textColor = fontColor,
+                containerColor = containerColor
             ),
             shape = RectangleShape,
         )
@@ -177,12 +278,14 @@ fun MyExposedDropdownMenu(fonts: FontFamily, gameViewModel: GameViewModel) {
         ) {
             difficulty.forEach { selectionOption ->
                 DropdownMenuItem(
+                    modifier = Modifier
+                        .background(containerColor),
                     text = {
                         Text(
                             selectionOption,
                             fontFamily = fonts,
                             fontSize = 24.sp,
-                            color = Color(0xFF01224C)
+                            color = fontColor
                         )
                     },
                     onClick = {
@@ -200,7 +303,7 @@ fun MyExposedDropdownMenu(fonts: FontFamily, gameViewModel: GameViewModel) {
 }
 
 @Composable
-fun MyRadioButtons(fonts: FontFamily, gameViewModel: GameViewModel) {
+fun MyRadioButtons(fonts: FontFamily, gameViewModel: GameViewModel, fontColor: Color) {
     val radioOptions = listOf("5", "10", "15")
     var selectedOption by remember { mutableStateOf(radioOptions[0]) }
     Column(
@@ -215,7 +318,7 @@ fun MyRadioButtons(fonts: FontFamily, gameViewModel: GameViewModel) {
                         gameViewModel.changeRounds(selectedOption.toInt())
                     },
                     colors = RadioButtonDefaults.colors(
-                        selectedColor = Color(0xFFDAE6F2),
+                        selectedColor = fontColor,
                         unselectedColor = Color(0x4001224C)
                     )
                 )
@@ -223,7 +326,7 @@ fun MyRadioButtons(fonts: FontFamily, gameViewModel: GameViewModel) {
                     text = option,
                     fontSize = 24.sp,
                     fontFamily = fonts,
-                    color = Color(0xFF01224C)
+                    color = fontColor
                 )
             }
         }
@@ -234,7 +337,7 @@ fun MyRadioButtons(fonts: FontFamily, gameViewModel: GameViewModel) {
 
 
 @Composable
-fun MySlider(fonts: FontFamily, gameViewModel: GameViewModel) {
+fun MySlider(fonts: FontFamily, gameViewModel: GameViewModel, fontColor: Color) {
     var sliderPosition by remember { mutableFloatStateOf(0.5f) }
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -245,11 +348,11 @@ fun MySlider(fonts: FontFamily, gameViewModel: GameViewModel) {
             onValueChange = {
                 sliderPosition = it
                 gameViewModel.changeTime((sliderPosition * 15).toInt())
-                println((sliderPosition*15).toInt())
+                println((gameViewModel.chosenTime))
             },
             colors = SliderDefaults.colors(
-                thumbColor = Color(0xFFDAE6F2),
-                activeTrackColor = Color(0xFF01224C),
+                thumbColor = fontColor,
+                activeTrackColor = fontColor,
                 inactiveTrackColor = Color(0x4001224C)
             )
         )
@@ -257,7 +360,7 @@ fun MySlider(fonts: FontFamily, gameViewModel: GameViewModel) {
             text = "${(sliderPosition * 15).toInt()} seconds per round.",
             fontFamily = fonts,
             fontSize = 24.sp,
-            color = Color(0xFF01224C)
+            color = fontColor
         )
 
     }

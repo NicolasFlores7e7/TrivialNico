@@ -16,6 +16,10 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,6 +37,14 @@ import com.example.trivianico.viewModel.GameViewModel
 @Composable
 fun Menu(navController: NavController, gameViewModel: GameViewModel) {
     val fonts = gameViewModel.fonts
+    var fontColor by remember { mutableStateOf(gameViewModel.appColors[5]) }
+    fontColor = if (gameViewModel.darkOnOrOff) {
+        gameViewModel.appColors[0]
+    } else gameViewModel.appColors[5]
+    var containerColor by remember { mutableStateOf(gameViewModel.appColors[0]) }
+    containerColor = if (gameViewModel.darkOnOrOff) {
+        gameViewModel.appColors[5]
+    } else gameViewModel.appColors[0]
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -51,8 +63,8 @@ fun Menu(navController: NavController, gameViewModel: GameViewModel) {
             modifier = Modifier
                 .fillMaxWidth(0.8f),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFDAE6F2),
-                contentColor = Color(0xFF01224C)
+                containerColor = containerColor,
+                contentColor = fontColor
             ),
             shape = RectangleShape
         ) {
@@ -74,8 +86,8 @@ Spacer(modifier = Modifier.width(16.dp))
             modifier = Modifier
                 .fillMaxWidth(0.8f),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFDAE6F2),
-                contentColor = Color(0xFF01224C)
+                containerColor = containerColor,
+                contentColor = fontColor
             ),
             shape = RectangleShape
         ) {

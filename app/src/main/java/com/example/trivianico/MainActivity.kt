@@ -43,18 +43,18 @@ class MainActivity : ComponentActivity() {
         val gameViewModel: GameViewModel by viewModels()
         setContent {
             TriviaNicoTheme {
-                var bgColor by remember { mutableStateOf(gameViewModel.appColors[3])}
+                var bgColor by remember { mutableStateOf(gameViewModel.appColors[3]) }
+                bgColor = if (gameViewModel.darkOnOrOff) {
+                    gameViewModel.appColors[4]
+                } else gameViewModel.appColors[3]
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = bgColor
                 ) {
-                    if (gameViewModel.darkOnOrOff) {
-                        bgColor = gameViewModel.appColors[4]
-                    }else bgColor = gameViewModel.appColors[3]
                     val navigationController = rememberNavController()
                     NavHost(
                         navController = navigationController,
-                        startDestination = Routes.Menu.route
+                        startDestination = Routes.Settings.route
                     ) {
                         composable(Routes.Menu.route) { Menu(navigationController, gameViewModel) }
                         composable(Routes.Game.route) { Game(navigationController, gameViewModel) }
