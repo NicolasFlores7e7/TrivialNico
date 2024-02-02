@@ -55,6 +55,7 @@ import com.example.trivianico.viewModel.GameViewModel
 @Composable
 fun Settings(navController: NavController, gameViewModel: GameViewModel) {
     val fonts = gameViewModel.fonts
+    var checked by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
             .fillMaxSize(0.9f)

@@ -49,6 +49,7 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
     if (gameViewModel.gameOver) {
         navController.navigate(Routes.Result.route)
     }
+    var timeLeft by rememberSaveable { mutableIntStateOf(gameViewModel.remainingTime) }
     var configuration = LocalConfiguration.current
     when (configuration.orientation) {
         Configuration.ORIENTATION_LANDSCAPE -> {
@@ -124,7 +125,7 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                                     gameViewModel.buttonsEnabler = false
                                 },
                                 modifier = Modifier
-                                    .width(100.dp)
+                                    .width(120.dp)
                                     .height(80.dp),
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = gameViewModel.appColors[0],
@@ -150,7 +151,7 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                                     gameViewModel.buttonsEnabler = false
                                 },
                                 modifier = Modifier
-                                    .width(100.dp)
+                                    .width(120.dp)
                                     .height(80.dp),
 
                                 colors = ButtonDefaults.buttonColors(
@@ -176,7 +177,7 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                                     gameViewModel.buttonsEnabler = false
                                 },
                                 modifier = Modifier
-                                    .width(100.dp)
+                                    .width(120.dp)
                                     .height(80.dp),
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = gameViewModel.appColors[0],
@@ -201,7 +202,7 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                                     gameViewModel.buttonsEnabler = false
                                 },
                                 modifier = Modifier
-                                    .width(100.dp)
+                                    .width(120.dp)
                                     .height(80.dp),
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = gameViewModel.appColors[0],
@@ -218,8 +219,33 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                                     textAlign = TextAlign.Center
                                 )
                             }
-                        }
 
+                        }
+                        Spacer(Modifier.height(32.dp))
+//                        Countdown(gameViewModel
+                        LaunchedEffect(timeLeft) {
+                            gameViewModel.imageSelector()
+                            while (timeLeft > 0) {
+                                delay(1000L)
+                                timeLeft--
+
+                            }
+                            if (timeLeft == 0) {
+                                gameViewModel.stopCountdown()
+                                delay(2000L)
+                                gameViewModel.roundsPlusOne()
+                                timeLeft = gameViewModel.remainingTime
+                            }
+                        }
+                        Column(
+
+                            modifier = Modifier
+                                .fillMaxWidth(0.8f),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            LinearProgressIndicator(progress = timeLeft.toFloat() / gameViewModel.chosenTime)
+                            Text(text = "$timeLeft")
+                        }
                     }
                 }
 
@@ -389,7 +415,30 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
 
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                Countdown(gameViewModel)
+//                Countdown(gameViewModel)
+                LaunchedEffect(timeLeft) {
+                    gameViewModel.imageSelector()
+                    while (timeLeft > 0) {
+                        delay(1000L)
+                        timeLeft--
+
+                    }
+                    if (timeLeft == 0) {
+                        gameViewModel.stopCountdown()
+                        delay(2000L)
+                        gameViewModel.roundsPlusOne()
+                        timeLeft = gameViewModel.remainingTime
+                    }
+                }
+                Column(
+
+                    modifier = Modifier
+                        .fillMaxWidth(0.8f),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    LinearProgressIndicator(progress = timeLeft.toFloat() / gameViewModel.chosenTime)
+                    Text(text = "$timeLeft")
+                }
             }
         }
     }
@@ -397,31 +446,33 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
 
 }
 
-@Composable
-fun Countdown(gameViewModel: GameViewModel) {
-    var timeLeft by rememberSaveable { mutableIntStateOf(gameViewModel.remainingTime) }
-    LaunchedEffect(timeLeft) {
-        gameViewModel.imageSelector()
-        while (timeLeft > 0) {
-            delay(1000L)
-            timeLeft--
-
-        }
-        if (timeLeft == 0) {
-            gameViewModel.stopCountdown()
-            delay(2000L)
-            gameViewModel.roundsPlusOne()
-            timeLeft = gameViewModel.remainingTime
-        }
-    }
-    Column(
-        modifier = Modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        LinearProgressIndicator(progress = timeLeft.toFloat() / gameViewModel.chosenTime)
-        Text(text = "$timeLeft")
-    }
-}
+//@Composable
+//fun Countdown(gameViewModel: GameViewModel) {
+//
+//    LaunchedEffect(timeLeft) {
+//        gameViewModel.imageSelector()
+//        while (timeLeft > 0) {
+//            delay(1000L)
+//            timeLeft--
+//
+//        }
+//        if (timeLeft == 0) {
+//            gameViewModel.stopCountdown()
+//            delay(2000L)
+//            gameViewModel.roundsPlusOne()
+//            timeLeft = gameViewModel.remainingTime
+//        }
+//    }
+//    Column(
+//
+//        modifier = Modifier
+//            .fillMaxWidth(0.8f),
+//        horizontalAlignment = Alignment.CenterHorizontally
+//    ) {
+//        LinearProgressIndicator(progress = timeLeft.toFloat() / gameViewModel.chosenTime)
+//        Text(text = "$timeLeft")
+//    }
+//}
 
 
 
