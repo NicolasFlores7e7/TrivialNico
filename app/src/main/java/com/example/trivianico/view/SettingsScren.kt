@@ -270,6 +270,7 @@ fun MySwitch(gameViewModel: GameViewModel) {
         checked = checked,
         onCheckedChange = {
             checked = it
+            gameViewModel.changeDarkMode(checked)
         },
         colors = SwitchDefaults.colors(
             checkedThumbColor = Color(0xFFDAE6F2),

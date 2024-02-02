@@ -1,5 +1,6 @@
 package com.example.trivianico.view
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,10 +20,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
 import com.example.trivianico.R
 import com.example.trivianico.navigation.Routes
@@ -31,6 +34,13 @@ import com.example.trivianico.viewModel.GameViewModel
 @Composable
 fun Result(navController: NavController, gameViewModel: GameViewModel) {
     val fonts = gameViewModel.fonts
+    val context = LocalContext.current
+    val text = "Mira mi puntuación en este juego de trivia"
+    val sendIntent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(Intent.EXTRA_TEXT,text)
+    }
+    val shareIntent = Intent.createChooser(sendIntent,"Share with...")
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -50,7 +60,9 @@ fun Result(navController: NavController, gameViewModel: GameViewModel) {
         )
         Spacer(modifier = Modifier.height(16.dp))
         ElevatedButton(
-            onClick = {           },
+            onClick = {
+                      startActivity(context, shareIntent, null)
+            },
             modifier = Modifier
                 .fillMaxWidth(0.8f),
             colors = ButtonDefaults.buttonColors(

@@ -2,11 +2,11 @@ package com.example.trivianico.viewModel
 
 
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.lifecycle.ViewModel
@@ -14,13 +14,9 @@ import com.example.trivianico.R
 import com.example.trivianico.model.Category
 import com.example.trivianico.model.Diff
 import com.example.trivianico.model.questionsList
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
-class GameViewModel : ViewModel() {
+
+class GameViewModel() : ViewModel() {
     val fonts = FontFamily(
         Font(R.font.josefinsans_regular)
     )
@@ -28,7 +24,7 @@ class GameViewModel : ViewModel() {
     var chosenDif by mutableStateOf("Easy")
     var chosenRounds by mutableIntStateOf(5)
     var chosenTime by mutableIntStateOf(7)
-    private var darkOnOrOff by mutableStateOf(false)
+    var darkOnOrOff by mutableStateOf(false)
     var roundsCounter by mutableIntStateOf(1)
     var correct by mutableIntStateOf(0)
     var remainingTime by mutableIntStateOf(chosenTime)
@@ -46,12 +42,13 @@ class GameViewModel : ViewModel() {
     )
     var randomPositionsShuffled by mutableStateOf(randomPositions.shuffled())
 
-    var buttonColors = listOf(
+    var appColors = listOf(
         Color(0xFFDAE6F2),
         Color(0xB2FF8181),
         Color(0xA9447744),
-
-        )
+        Color(146, 193, 220, 255),
+        Color(78, 100, 116, 255)
+    )
     var buttonColorsChanger by mutableStateOf(
         listOf(
             mutableIntStateOf(1),
@@ -61,8 +58,6 @@ class GameViewModel : ViewModel() {
         )
     )
     var buttonsEnabler by mutableStateOf(true)
-
-//    private var countdownJob: Job? = null
 
     private var isItCorrect by mutableStateOf(false)
     var gameOver by mutableStateOf(false)
@@ -77,19 +72,15 @@ class GameViewModel : ViewModel() {
     )
 
     var imageListSelector by mutableIntStateOf(0)
+    var questionDiffListNumber by mutableStateOf(
+        listOf(
+            questionsList.filter { it.diff == Diff.Easy },
+            questionsList.filter { it.diff == Diff.Normal },
+            questionsList.filter { it.diff == Diff.Hard }
 
-    private fun questionRandomizer() {
-
-        random = questionsList.indices.random()
-        randomPositions = listOf(
-            questionsList[random].correctOption,
-            questionsList[random].incorrectOption1,
-            questionsList[random].incorrectOption2,
-            questionsList[random].incorrectOption3
         )
-        randomPositionsShuffled = randomPositions.shuffled()
-    }
-
+    )
+    var diffNumber by mutableIntStateOf(0)
     fun changeDif(dif: String) {
         chosenDif = dif
     }
@@ -106,7 +97,7 @@ class GameViewModel : ViewModel() {
 
     private fun buttonDisabledColor() {
         for (i in buttonColorsChanger.indices)
-            if (randomPositionsShuffled[i] == questionsList[random].correctOption) {
+            if (randomPositionsShuffled[i] == questionDiffListNumber[diffNumber][random].correctOption) {
                 buttonColorsChanger[i].value = 2
             } else buttonColorsChanger[i].value = 1
 
@@ -126,7 +117,7 @@ class GameViewModel : ViewModel() {
     }
 
     fun checkIfCorrect(option: String) {
-        isItCorrect = if (option == questionsList[random].correctOption) {
+        isItCorrect = if (option == questionDiffListNumber[diffNumber][random].correctOption) {
             correct++
             true
 
@@ -160,11 +151,14 @@ class GameViewModel : ViewModel() {
         correct = 0
         roundsCounter = 1
         remainingTime = chosenTime
+//        questionRandomizer()
+        questionsDiff()
+        enableButtons()
     }
 
 
     fun imageSelector() {
-        imageListSelector = when (questionsList[random].category) {
+        imageListSelector = when (questionDiffListNumber[diffNumber][random].category) {
             Category.Geografia -> 0
             Category.Historia -> 1
             Category.Arte -> 2
@@ -175,47 +169,52 @@ class GameViewModel : ViewModel() {
     }
 
     fun questionsDiff() {
-        val easyQuestions = questionsList.filter { it.diff == Diff.Easy }
-        val normalQuestions = questionsList.filter { it.diff == Diff.Normal }
-        val hardQuestions = questionsList.filter { it.diff == Diff.Hard }
 
         when (chosenDif) {
             "Easy" -> {
-                random = easyQuestions.indices.random()
+                diffNumber = 0
+                questionDiffListNumber[0]
+                random = questionDiffListNumber[0].indices.random()
                 randomPositions = listOf(
-                    easyQuestions[random].correctOption,
-                    easyQuestions[random].incorrectOption1,
-                    easyQuestions[random].incorrectOption2,
-                    easyQuestions[random].incorrectOption3
+                    questionDiffListNumber[diffNumber][random].correctOption,
+                    questionDiffListNumber[diffNumber][random].incorrectOption1,
+                    questionDiffListNumber[diffNumber][random].incorrectOption2,
+                    questionDiffListNumber[diffNumber][random].incorrectOption3
                 )
                 randomPositionsShuffled = randomPositions.shuffled()
             }
+
             "Normal" -> {
-                random = normalQuestions.indices.random()
+                diffNumber = 1
+                questionDiffListNumber[diffNumber]
+                random = questionDiffListNumber[diffNumber].indices.random()
                 randomPositions = listOf(
-                    normalQuestions[random].correctOption,
-                    normalQuestions[random].incorrectOption1,
-                    normalQuestions[random].incorrectOption2,
-                    normalQuestions[random].incorrectOption3
+                    questionDiffListNumber[diffNumber][random].correctOption,
+                    questionDiffListNumber[diffNumber][random].incorrectOption1,
+                    questionDiffListNumber[diffNumber][random].incorrectOption2,
+                    questionDiffListNumber[diffNumber][random].incorrectOption3
                 )
                 randomPositionsShuffled = randomPositions.shuffled()
             }
+
             else -> {
-                random = hardQuestions.indices.random()
+                diffNumber = 2
+                questionDiffListNumber[diffNumber]
+                random = questionDiffListNumber[diffNumber].indices.random()
                 randomPositions = listOf(
-                    hardQuestions[random].correctOption,
-                    hardQuestions[random].incorrectOption1,
-                    hardQuestions[random].incorrectOption2,
-                    hardQuestions[random].incorrectOption3
+                    questionDiffListNumber[diffNumber][random].correctOption,
+                    questionDiffListNumber[diffNumber][random].incorrectOption1,
+                    questionDiffListNumber[diffNumber][random].incorrectOption2,
+                    questionDiffListNumber[diffNumber][random].incorrectOption3
                 )
                 randomPositionsShuffled = randomPositions.shuffled()
             }
         }
         println("Diff = $chosenDif")
+        println()
         println(random)
         println(randomPositions)
     }
-
 }
 
 

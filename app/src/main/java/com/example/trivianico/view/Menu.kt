@@ -45,7 +45,6 @@ fun Menu(navController: NavController, gameViewModel: GameViewModel) {
         )
         ElevatedButton(
             onClick = {
-                gameViewModel.reset()
                 navController.navigate(Routes.Game.route)
                 gameViewModel.reset()
             },
