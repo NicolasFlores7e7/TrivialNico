@@ -1,10 +1,14 @@
 package com.example.trivianico.view
 
 import android.content.Intent
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -24,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -54,75 +59,179 @@ fun Result(navController: NavController, gameViewModel: GameViewModel) {
         gameViewModel.appColors[5]
     } else gameViewModel.appColors[0]
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(bottom = 80.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_app),
-            contentDescription = "Icono"
-        )
-        Text(
-            text = "Puntuacion : ${gameViewModel.correct} puntos",
-            fontSize = 32.sp,
-            fontFamily = fonts,
-            textAlign = TextAlign.Center,
-            color = fontColor
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        ElevatedButton(
-            onClick = {
-                      startActivity(context, shareIntent, null)
-            },
-            modifier = Modifier
-                .fillMaxWidth(0.8f),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = containerColor,
-                contentColor = fontColor
-            ),
-            shape = RectangleShape
-        ) {
-            Icon(
-                painterResource(id = R.drawable.ic_share),
-                contentDescription = "icon",
+    var configuration = LocalConfiguration.current
 
-                )
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(
-                text = "Share",
-                fontSize = 24.sp,
-                fontFamily = fonts,
-            )
+    when (configuration.orientation) {
+        Configuration.ORIENTATION_LANDSCAPE -> {
+            BoxWithConstraints(
+                modifier = Modifier
+                    .fillMaxSize(0.8f)
+                    .padding(top = 32.dp),
+            ){
+                Row(
+                    modifier = Modifier
+                        .fillMaxHeight(0.8f),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Column(modifier = Modifier
+                        .fillMaxHeight()) {
+                        Image(
+
+                            painter = painterResource(id = R.drawable.ic_app),
+                            contentDescription = "Icono"
+                        )
+                    }
+                    Column(
+                        modifier = Modifier
+                            .fillMaxHeight(0.9f),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxHeight(0.8f),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = "Puntuacion : ${gameViewModel.correct} puntos",
+                                fontSize = 32.sp,
+                                fontFamily = fonts,
+                                textAlign = TextAlign.Center,
+                                color = fontColor
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            ElevatedButton(
+                                onClick = {
+                                    startActivity(context, shareIntent, null)
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth(0.8f),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = containerColor,
+                                    contentColor = fontColor
+                                ),
+                                shape = RectangleShape
+                            ) {
+                                Icon(
+                                    painterResource(id = R.drawable.ic_share),
+                                    contentDescription = "icon",
+
+                                    )
+                                Spacer(modifier = Modifier.width(16.dp))
+                                Text(
+                                    text = "Share",
+                                    fontSize = 24.sp,
+                                    fontFamily = fonts,
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(16.dp))
+                            ElevatedButton(
+                                onClick = {
+                                    navController.navigate(Routes.Menu.route)
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth(0.8f),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = containerColor,
+                                    contentColor = fontColor
+                                ),
+                                shape = RectangleShape
+                            ) {
+                                Icon(
+                                    painterResource(id = R.drawable.ic_menu),
+                                    contentDescription = "icon",
+
+                                    )
+                                Spacer(modifier = Modifier.width(16.dp))
+                                Text(
+                                    text = "Return to main menu",
+                                    fontSize = 24.sp,
+                                    fontFamily = fonts,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                        }
+                    }
+
+                }
+            }
         }
-        Spacer(modifier = Modifier.height(16.dp))
-        ElevatedButton(
-            onClick = {
-                navController.navigate(Routes.Menu.route)
-            },
-            modifier = Modifier
-                .fillMaxWidth(0.8f),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = containerColor,
-                contentColor = fontColor
-            ),
-            shape = RectangleShape
-        ) {
-            Icon(
-                painterResource(id = R.drawable.ic_menu),
-                contentDescription = "icon",
-
+        else -> {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 80.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_app),
+                    contentDescription = "Icono"
                 )
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(
-                text = "Return to main menu",
-                fontSize = 24.sp,
-                fontFamily = fonts,
-                textAlign = TextAlign.Center
-            )
+                Text(
+                    text = "Puntuacion : ${gameViewModel.correct} puntos",
+                    fontSize = 32.sp,
+                    fontFamily = fonts,
+                    textAlign = TextAlign.Center,
+                    color = fontColor
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                ElevatedButton(
+                    onClick = {
+                        startActivity(context, shareIntent, null)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth(0.8f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = containerColor,
+                        contentColor = fontColor
+                    ),
+                    shape = RectangleShape
+                ) {
+                    Icon(
+                        painterResource(id = R.drawable.ic_share),
+                        contentDescription = "icon",
+
+                        )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Text(
+                        text = "Share",
+                        fontSize = 24.sp,
+                        fontFamily = fonts,
+                    )
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                ElevatedButton(
+                    onClick = {
+                        navController.navigate(Routes.Menu.route)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth(0.8f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = containerColor,
+                        contentColor = fontColor
+                    ),
+                    shape = RectangleShape
+                ) {
+                    Icon(
+                        painterResource(id = R.drawable.ic_menu),
+                        contentDescription = "icon",
+
+                        )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Text(
+                        text = "Return to main menu",
+                        fontSize = 24.sp,
+                        fontFamily = fonts,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
         }
     }
+
+
 
 }

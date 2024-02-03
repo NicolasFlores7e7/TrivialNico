@@ -77,15 +77,24 @@ fun Settings(navController: NavController, gameViewModel: GameViewModel) {
                 modifier = Modifier
                     .fillMaxSize(0.9f),
             ){
+                Spacer(Modifier.height(16.dp))
                 Row(modifier = Modifier
                     .fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center) {
-                    Text(text = "Settings",
-                        color = containerColor
+                    Text(
+                        text = "Settings",
+                        fontFamily = fonts,
+                        fontSize = 32.sp,
+                        color = fontColor
                         )
                 }
-                Spacer(Modifier.height(16.dp))
-                Row{
+                Spacer(Modifier.height(24.dp))
+                Row(
+                    modifier = Modifier
+                        .padding(
+                            start = 64.dp,
+                            top = 32.dp),
+                    ){
                     Column(
                         modifier = Modifier
                             .fillMaxHeight(),

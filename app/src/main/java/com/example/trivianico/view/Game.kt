@@ -62,12 +62,13 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
         Configuration.ORIENTATION_LANDSCAPE -> {
             BoxWithConstraints(
                 modifier = Modifier
-                    .fillMaxSize(0.8f)
+                    .fillMaxSize(0.9f)
             ) {
                 Row {
                     Column(
                         modifier = Modifier
-                            .fillMaxHeight(),
+                            .fillMaxHeight()
+                            .padding(start = 16.dp),
                         verticalArrangement = Arrangement.Top,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -91,8 +92,7 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                             contentScale = ContentScale.Inside
                         )
                         Text(
-                            modifier = Modifier
-                                .padding(top = 32.dp),
+                            modifier = Modifier,
                             text = gameViewModel.questionDiffListNumber[gameViewModel.diffNumber][gameViewModel.random].category.toString(),
                             fontSize = 32.sp,
                             fontFamily = fonts,
@@ -105,11 +105,12 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                         modifier = Modifier
                             .fillMaxHeight()
                             .padding(start = 16.dp),
-                        verticalArrangement = Arrangement.Center
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
                             modifier = Modifier
-                                .fillMaxWidth(0.8f),
+                                .fillMaxWidth(0.7f),
                             text = gameViewModel.questionDiffListNumber[gameViewModel.diffNumber][gameViewModel.random].question,
                             fontSize = 24.sp,
                             fontFamily = fonts,
@@ -118,7 +119,8 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                             color = fontColor,
                         )
                         Spacer(modifier = Modifier.height(32.dp))
-                        Row(
+                        Row(modifier = Modifier
+                            .fillMaxWidth()
                         ) {
                             Button(
                                 onClick = {
@@ -145,7 +147,7 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                                     textAlign = TextAlign.Center
                                 )
                             }
-                            Spacer(modifier = Modifier.width(16.dp))
+                            Spacer(modifier = Modifier.width(12.dp))
                             Button(
                                 onClick = {
                                     gameViewModel.checkIfCorrect(gameViewModel.randomPositionsShuffled[1])
@@ -171,7 +173,7 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                                     textAlign = TextAlign.Center
                                 )
                             }
-                            Spacer(modifier = Modifier.width(16.dp))
+                            Spacer(modifier = Modifier.width(12.dp))
                             Button(
                                 onClick = {
                                     gameViewModel.checkIfCorrect(gameViewModel.randomPositionsShuffled[2])
@@ -196,7 +198,7 @@ fun Game(navController: NavController, gameViewModel: GameViewModel) {
                                     textAlign = TextAlign.Center
                                 )
                             }
-                            Spacer(modifier = Modifier.width(16.dp))
+                            Spacer(modifier = Modifier.width(12.dp))
                             Button(
                                 onClick = {
                                     gameViewModel.checkIfCorrect(gameViewModel.randomPositionsShuffled[3])
